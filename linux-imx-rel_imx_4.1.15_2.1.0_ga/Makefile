@@ -9,7 +9,8 @@ NAME = Series 4800
 # More info can be located in ./README
 # Comments in this file are targeted only to the developer, do not
 # expect to learn how to build the kernel reading this file.
-
+CROSS_COMPILE ?= arm-linux-gnueabihf-
+ARCH ?= arm
 # o Do not use make's built-in rules and variables
 #   (this increases performance and avoids hard-to-debug behaviour);
 # o Look for make include files relative to root of kernel src

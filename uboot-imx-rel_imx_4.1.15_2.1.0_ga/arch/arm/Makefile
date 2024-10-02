@@ -3,11 +3,11 @@
 #
 
 ifeq ($(CONFIG_SPL_BUILD)$(CONFIG_TEGRA),yy)
-CONFIG_CPU_V7=
-CONFIG_CPU_ARM720T=y
+CONFIG_CPU_V7=y
+CONFIG_CPU_ARM720T=
 endif
 
-arch-$(CONFIG_CPU_V7)		=$(call cc-option, -march=armv7-a, -march=armv5)
+arch-$(CONFIG_CPU_V7)		= -march=armv7-a
 
 # Evaluate arch cc-option calls now
 arch-y := $(arch-y)
