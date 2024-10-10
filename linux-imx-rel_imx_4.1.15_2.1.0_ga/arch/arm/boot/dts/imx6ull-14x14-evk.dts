@@ -173,6 +173,7 @@
 	pinctrl-0 = <&pinctrl_enet1>;
 	phy-mode = "rmii";
 	phy-handle = <&ethphy0>;
+	phy-reset-gpios = <&gpio5 7 0>;
 	status = "okay";
 };
 
@@ -181,6 +182,7 @@
 	pinctrl-0 = <&pinctrl_enet2>;
 	phy-mode = "rmii";
 	phy-handle = <&ethphy1>;
+	phy-reset-gpios = <&gpio5 8 0>; 
 	status = "okay";
 
 	mdio {
@@ -316,6 +318,7 @@
 				MX6UL_PAD_ENET1_TX_DATA0__ENET1_TDATA00	0x1b0b0
 				MX6UL_PAD_ENET1_TX_DATA1__ENET1_TDATA01	0x1b0b0
 				MX6UL_PAD_ENET1_TX_CLK__ENET1_REF_CLK1	0x4001b031
+				MX6ULL_PAD_SNVS_TAMPER7__GPIO5_IO07	0x17059
 			>;
 		};
 
@@ -331,6 +334,7 @@
 				MX6UL_PAD_ENET2_TX_DATA0__ENET2_TDATA00	0x1b0b0
 				MX6UL_PAD_ENET2_TX_DATA1__ENET2_TDATA01	0x1b0b0
 				MX6UL_PAD_ENET2_TX_CLK__ENET2_REF_CLK2	0x4001b031
+				MX6ULL_PAD_SNVS_TAMPER8__GPIO5_IO08	0x17059
 			>;
 		};
 
@@ -585,8 +589,8 @@
                         fsl,pins = <
                                 MX6ULL_PAD_BOOT_MODE0__GPIO5_IO10        0x70a1
                                 MX6ULL_PAD_BOOT_MODE1__GPIO5_IO11        0x70a1
-                                MX6ULL_PAD_SNVS_TAMPER7__GPIO5_IO07      0x70a1
-                                MX6ULL_PAD_SNVS_TAMPER8__GPIO5_IO08      0x80000000
+                              //MX6ULL_PAD_SNVS_TAMPER7__GPIO5_IO07      0x70a1
+                              //MX6ULL_PAD_SNVS_TAMPER8__GPIO5_IO08      0x80000000
                         >;
                 };
 

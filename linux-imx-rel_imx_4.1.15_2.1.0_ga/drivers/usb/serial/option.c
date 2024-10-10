@@ -624,6 +624,7 @@ static const struct option_blacklist_info sierra_mc73xx_blacklist = {
 };
 
 static const struct usb_device_id option_ids[] = {
+	{ USB_DEVICE(0x19d2, 0x1476) },
 	{ USB_DEVICE(OPTION_VENDOR_ID, OPTION_PRODUCT_COLT) },
 	{ USB_DEVICE(OPTION_VENDOR_ID, OPTION_PRODUCT_RICOLA) },
 	{ USB_DEVICE(OPTION_VENDOR_ID, OPTION_PRODUCT_RICOLA_LIGHT) },
@@ -1881,6 +1882,25 @@ static int option_probe(struct usb_serial *serial,
 	    dev_desc->idProduct == cpu_to_le16(SAMSUNG_PRODUCT_GT_B3730) &&
 	    iface_desc->bInterfaceClass != USB_CLASS_CDC_DATA)
 		return -ENODEV;
+	/* EM3630 */
+
+	if(serial->dev->descriptor.idVendor ==0x19d2&&
+
+	serial->dev->descriptor.idProduct ==0x1476&&
+
+	serial->interface->cur_altsetting->desc. bInterfaceNumber ==3)
+
+	return-ENODEV;
+
+
+
+	if(serial->dev->descriptor.idVendor ==0x19d2&&
+
+	serial->dev->descriptor.idProduct ==0x1476&&
+
+	serial->interface->cur_altsetting->desc. bInterfaceNumber ==4)
+
+	return-ENODEV;
 
 	/* Store the blacklist info so we can use it during attach. */
 	usb_set_serial_data(serial, (void *)blacklist);
