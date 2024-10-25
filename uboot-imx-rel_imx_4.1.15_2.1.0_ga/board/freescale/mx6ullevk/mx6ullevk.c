@@ -104,6 +104,13 @@ static iomux_v3_cfg_t const iox_pads[] = {
 	MX6_PAD_SNVS_TAMPER8__GPIO5_IO08 | MUX_PAD_CTRL(NO_PAD_CTRL),
 };
 
+static iomux_v3_cfg_t const mygpio_pads[] = {
+	        MX6_PAD_GPIO1_IO04__GPIO1_IO04 | MUX_PAD_CTRL(NO_PAD_CTRL),
+				MX6_PAD_SNVS_TAMPER7__GPIO5_IO07 | MUX_PAD_CTRL(NO_PAD_CTRL),
+				MX6_PAD_SNVS_TAMPER8__GPIO5_IO08 | MUX_PAD_CTRL(NO_PAD_CTRL),
+};
+
+
 /*
  * HDMI_nRST --> Q0
  * ENET1_nRST --> Q1
@@ -241,6 +248,14 @@ static struct i2c_pads_info i2c_pad_info1 = {
 #define I2C_PMIC       0
 int power_init_board(void)
 {
+	imx_iomux_v3_setup_multiple_pads(mygpio_pads, ARRAY_SIZE(mygpio_pads));
+    gpio_request(IMX_GPIO_NR(1, 4), "mygpio");
+	gpio_direction_output(IMX_GPIO_NR(1, 4) , 0);
+	gpio_request(IMX_GPIO_NR(5, 7), "enet1rst");
+	gpio_direction_output(IMX_GPIO_NR(5, 7) , 1);
+	gpio_request(IMX_GPIO_NR(5, 8), "enet2rst");
+	gpio_direction_output(IMX_GPIO_NR(5, 8) , 1);
+	printf("yyy111\n");
 	if (is_mx6ull_9x9_evk()) {
 		struct pmic *pfuze;
 		int ret;
@@ -784,16 +799,16 @@ struct display_info_t const displays[] = {{
 	.detect = NULL,
 	.enable	= do_enable_parallel_lcd,
 	.mode	= {
-		.name			= "TFT43AB",
-		.xres           = 480,
-		.yres           = 272,
-		.pixclock       = 108695,
-		.left_margin    = 8,
-		.right_margin   = 4,
-		.upper_margin   = 2,
-		.lower_margin   = 4,
-		.hsync_len      = 41,
-		.vsync_len      = 10,
+		.name			= "ATK700R",
+		.xres           = 1024,
+		.yres           = 600,
+		.pixclock       = 19531,
+		.left_margin    = 140,
+		.right_margin   = 160,
+		.upper_margin   = 20,
+		.lower_margin   = 12,
+		.hsync_len      = 20,
+		.vsync_len      = 3,
 		.sync           = 0,
 		.vmode          = FB_VMODE_NONINTERLACED
 } } };

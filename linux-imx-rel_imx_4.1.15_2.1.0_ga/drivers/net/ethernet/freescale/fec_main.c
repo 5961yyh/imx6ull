@@ -1684,7 +1684,7 @@ static void fec_get_mac(struct net_device *ndev)
 	struct fec_enet_private *fep = netdev_priv(ndev);
 	struct fec_platform_data *pdata = dev_get_platdata(&fep->pdev->dev);
 	unsigned char *iap, tmpaddr[ETH_ALEN];
-
+#if 1
 	/*
 	 * try to get mac address in following order:
 	 *
@@ -1692,7 +1692,7 @@ static void fec_get_mac(struct net_device *ndev)
 	 *    fec.macaddr=0x00,0x04,0x9f,0x01,0x30,0xe0
 	 */
 	iap = macaddr;
-
+	mdelay(1000);
 	/*
 	 * 2) from device tree data
 	 */
@@ -1705,29 +1705,7 @@ static void fec_get_mac(struct net_device *ndev)
 		}
 	}
 
-	/*
-	 * 3) from flash or fuse (via platform data)
-	 */
-	if (!is_valid_ether_addr(iap)) {
-#ifdef CONFIG_M5272
-		if (FEC_FLASHMAC)
-			iap = (unsigned char *)FEC_FLASHMAC;
-#else
-		if (pdata)
-			iap = (unsigned char *)&pdata->mac;
-#endif
-	}
-
-	/*
-	 * 4) FEC mac registers set by bootloader
-	 */
-	if (!is_valid_ether_addr(iap)) {
-		*((__be32 *) &tmpaddr[0]) =
-			cpu_to_be32(readl(fep->hwp + FEC_ADDR_LOW));
-		*((__be16 *) &tmpaddr[4]) =
-			cpu_to_be16(readl(fep->hwp + FEC_ADDR_HIGH) >> 16);
-		iap = &tmpaddr[0];
-	}
+	
 
 	/*
 	 * 5) random mac address
@@ -1746,6 +1724,8 @@ static void fec_get_mac(struct net_device *ndev)
 	/* Adjust MAC if using macaddr */
 	if (iap == macaddr)
 		 ndev->dev_addr[ETH_ALEN-1] = macaddr[ETH_ALEN-1] + fep->dev_id;
+
+	#endif
 }
 
 /* ------------------------------------------------------------------------- */
