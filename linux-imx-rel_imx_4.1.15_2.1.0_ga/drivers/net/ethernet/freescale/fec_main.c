@@ -3428,7 +3428,7 @@ fec_probe(struct platform_device *pdev)
 	struct device_node *np = pdev->dev.of_node, *phy_node;
 	int num_tx_qs;
 	int num_rx_qs;
-
+	printk("yy3\n");
 	fec_enet_get_queue_num(pdev, &num_tx_qs, &num_rx_qs);
 
 	/* Init network device */

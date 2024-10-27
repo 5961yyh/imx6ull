@@ -209,6 +209,7 @@ static int pwm_backlight_parse_dt(struct device *dev,
 	return -ENODEV;
 }
 #endif
+struct pwm_device *backlight_pwm;
 
 static int pwm_backlight_probe(struct platform_device *pdev)
 {
@@ -290,8 +291,11 @@ static int pwm_backlight_probe(struct platform_device *pdev)
 		ret = PTR_ERR(pb->power_supply);
 		goto err_alloc;
 	}
+	printk("yyyyy\n");
 
 	pb->pwm = devm_pwm_get(&pdev->dev, NULL);
+	
+	backlight_pwm = pb->pwm; 
 	if (IS_ERR(pb->pwm)) {
 		ret = PTR_ERR(pb->pwm);
 		if (ret == -EPROBE_DEFER)
@@ -300,6 +304,7 @@ static int pwm_backlight_probe(struct platform_device *pdev)
 		dev_err(&pdev->dev, "unable to request PWM, trying legacy API\n");
 		pb->legacy = true;
 		pb->pwm = pwm_request(data->pwm_id, "pwm-backlight");
+		printk("yyyyy\n");
 		if (IS_ERR(pb->pwm)) {
 			dev_err(&pdev->dev, "unable to request legacy PWM\n");
 			ret = PTR_ERR(pb->pwm);
@@ -352,6 +357,17 @@ err_alloc:
 		data->exit(&pdev->dev);
 	return ret;
 }
+void pwm_backlight_enable(void) {
+    if (backlight_pwm)
+        pwm_enable(backlight_pwm);
+}
+
+void pwm_backlight_disable(void) {
+    if (backlight_pwm)
+        pwm_disable(backlight_pwm);
+}
+EXPORT_SYMBOL(pwm_backlight_enable);
+EXPORT_SYMBOL(pwm_backlight_disable);
 
 static int pwm_backlight_remove(struct platform_device *pdev)
 {

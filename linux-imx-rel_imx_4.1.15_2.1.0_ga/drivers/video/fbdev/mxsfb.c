@@ -38,6 +38,7 @@
  * of the i.MX28 and you can vary it between 2 ns ... 8 ns in 2 ns steps. Give
  * the required value in the imx_fb_videomode structure.
  */
+#include <linux/pwm.h>
 
 #include <linux/busfreq-imx.h>
 #include <linux/console.h>
@@ -181,6 +182,8 @@
 
 #define FB_SYNC_OE_LOW_ACT		0x80000000
 #define FB_SYNC_CLK_LAT_FALL	0x40000000
+void pwm_backlight_enable(void);
+void pwm_backlight_disable(void);
 
 enum mxsfb_devtype {
 	MXSFB_V3,
@@ -899,6 +902,9 @@ static int mxsfb_blank(int blank, struct fb_info *fb_info)
 		clk_enable_pix(host);
 		clk_enable_axi(host);
 		clk_enable_disp_axi(host);
+		pwm_backlight_disable();  // 关闭PWM
+
+			
 
 		if (!host->enabled) {
 			pm_runtime_get_sync(&host->pdev->dev);
@@ -907,6 +913,9 @@ static int mxsfb_blank(int blank, struct fb_info *fb_info)
 			mxsfb_set_par(host->fb_info);
 			mxsfb_enable_controller(fb_info);
 		}
+		pwm_backlight_enable();  // 打开PWM
+		//while(1);
+		printk("yy2\n");
 		break;
 	}
 	return 0;
@@ -1366,6 +1375,7 @@ static const struct of_device_id mxsfb_dt_ids[] = {
 };
 MODULE_DEVICE_TABLE(of, mxsfb_dt_ids);
 
+
 static int mxsfb_probe(struct platform_device *pdev)
 {
 	const struct of_device_id *of_id =
@@ -1376,7 +1386,12 @@ static int mxsfb_probe(struct platform_device *pdev)
 	struct pinctrl *pinctrl;
 	int irq = platform_get_irq(pdev, 0);
 	int gpio, ret;
-
+	
+	struct pwm_device *pwm = devm_pwm_get(&pdev->dev, "pwm-backlight");
+	if (IS_ERR(pwm)) {
+    dev_err(&pdev->dev, "Failed to get PWM device\n");
+    //return PTR_ERR(pwm);
+}
 	if (of_id)
 		pdev->id_entry = of_id->data;
 
@@ -1483,14 +1498,17 @@ static int mxsfb_probe(struct platform_device *pdev)
 			goto fb_pm_runtime_disable;
 		}
 	}
-
+	
+	pwm_backlight_disable();  // 关闭PWM
 	if (!host->enabled) {
 		writel(0, host->base + LCDC_CTRL);
 		mxsfb_set_par(fb_info);
 		mxsfb_enable_controller(fb_info);
 		pm_runtime_get_sync(&host->pdev->dev);
 	}
-
+	pwm_backlight_enable();  // 打开PWM
+	//while(1);
+	printk("yy1\n");
 	ret = register_framebuffer(fb_info);
 	if (ret != 0) {
 		dev_err(&pdev->dev, "Failed to register framebuffer\n");

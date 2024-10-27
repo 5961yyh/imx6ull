@@ -967,7 +967,7 @@ static int cmpc_ipml_add(struct acpi_device *acpi)
 
 	memset(&props, 0, sizeof(struct backlight_properties));
 	props.type = BACKLIGHT_PLATFORM;
-	props.max_brightness = 7;
+	props.max_brightness = 10;
 	ipml->bd = backlight_device_register("cmpc_bl", &acpi->dev,
 					     acpi->handle, &cmpc_bl_ops,
 					     &props);
