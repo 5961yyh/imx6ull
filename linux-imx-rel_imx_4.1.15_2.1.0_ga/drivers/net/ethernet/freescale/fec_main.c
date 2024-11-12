@@ -64,6 +64,7 @@
 #include <linux/regmap.h>
 
 #include <asm/cacheflush.h>
+#include <linux/pwm.h>
 
 #include "fec.h"
 
@@ -3414,6 +3415,8 @@ static void fec_enet_of_parse_stop_mode(struct platform_device *pdev)
 	fep->gpr.req_gpr = out_val[1];
 	fep->gpr.req_bit = out_val[2];
 }
+void pwm_backlight_enable(void);
+void pwm_backlight_disable(void);
 
 static int
 fec_probe(struct platform_device *pdev)
@@ -3430,7 +3433,9 @@ fec_probe(struct platform_device *pdev)
 	int num_rx_qs;
 	printk("yy3\n");
 	fec_enet_get_queue_num(pdev, &num_tx_qs, &num_rx_qs);
-
+	/*pwm_backlight_disable();  // 关闭PWM
+	msleep(3000);
+	pwm_backlight_enable();  // 打开PWM*/
 	/* Init network device */
 	ndev = alloc_etherdev_mqs(sizeof(struct fec_enet_private),
 				  num_tx_qs, num_rx_qs);

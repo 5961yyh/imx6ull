@@ -1762,7 +1762,7 @@ static int ov5640_probe(struct i2c_client *client,
 					"ov5640_pwdn");
 	if (retval < 0)
 		return retval;
-
+	printk("yy:%d",pwn_gpio);
 	/* request reset pin */
 	rst_gpio = of_get_named_gpio(dev->of_node, "rst-gpios", 0);
 	if (!gpio_is_valid(rst_gpio)) {
@@ -1773,7 +1773,8 @@ static int ov5640_probe(struct i2c_client *client,
 					"ov5640_reset");
 	if (retval < 0)
 		return retval;
-
+	printk("yy:%d",rst_gpio);
+	
 	/* Set initial values for the sensor struct. */
 	memset(&ov5640_data, 0, sizeof(ov5640_data));
 	ov5640_data.sensor_clk = devm_clk_get(dev, "csi_mclk");

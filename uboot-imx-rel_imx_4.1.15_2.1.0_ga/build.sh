@@ -1,4 +1,4 @@
 #!/bin/bash
-make -j16 yangyq_defconfig
-make -s -j16
+make  yangyq_defconfig
+make -s -j32
 cp ./u-boot.imx ../nxpdev/u-boot-yangyq-emmc.imx

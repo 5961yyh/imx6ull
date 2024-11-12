@@ -18,6 +18,7 @@
  */
 
 #define DRIVER_NAME "mxsfb"
+#include <linux/delay.h>
 
 /**
  * @file
@@ -1386,12 +1387,7 @@ static int mxsfb_probe(struct platform_device *pdev)
 	struct pinctrl *pinctrl;
 	int irq = platform_get_irq(pdev, 0);
 	int gpio, ret;
-	
-	struct pwm_device *pwm = devm_pwm_get(&pdev->dev, "pwm-backlight");
-	if (IS_ERR(pwm)) {
-    dev_err(&pdev->dev, "Failed to get PWM device\n");
-    //return PTR_ERR(pwm);
-}
+	pwm_backlight_disable();  // 关闭PWM
 	if (of_id)
 		pdev->id_entry = of_id->data;
 
@@ -1499,16 +1495,14 @@ static int mxsfb_probe(struct platform_device *pdev)
 		}
 	}
 	
-	pwm_backlight_disable();  // 关闭PWM
+	
 	if (!host->enabled) {
 		writel(0, host->base + LCDC_CTRL);
 		mxsfb_set_par(fb_info);
 		mxsfb_enable_controller(fb_info);
 		pm_runtime_get_sync(&host->pdev->dev);
 	}
-	pwm_backlight_enable();  // 打开PWM
-	//while(1);
-	printk("yy1\n");
+	
 	ret = register_framebuffer(fb_info);
 	if (ret != 0) {
 		dev_err(&pdev->dev, "Failed to register framebuffer\n");
@@ -1524,7 +1518,8 @@ static int mxsfb_probe(struct platform_device *pdev)
 	}
 
 	dev_info(&pdev->dev, "initialized\n");
-
+	msleep(1000);
+	pwm_backlight_enable();  // 打开PWM
 	return 0;
 
 fb_unregister:
